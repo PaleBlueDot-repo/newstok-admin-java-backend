@@ -1,20 +1,28 @@
 package com.NewsTok.Admin.Models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="news")
 public class News {
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String newspaperName;
     private String category;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String title;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String article;
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String link;
+
     private String published;
 
     public Long getId() {
