@@ -16,10 +16,6 @@ public class NewsController {
     private NewsService newsService;
 
 
-    @GetMapping("/testToken")
-    public String testToken(){
-        return "Hello I'm Testing Token";
-    }
 
     @GetMapping("/newscontroller")
     public String getNewscontroller(){
@@ -36,9 +32,13 @@ public class NewsController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity< List<News>> getNewsById(@PathVariable Long id) {
-        List<News>  newsList =  newsService.getNewsById(id);
+
+
+    @GetMapping("/getAllNews")
+    public ResponseEntity<List<News>> getAllNews() {
+        List<News> newsList = newsService.getAllNews();
         return ResponseEntity.ok(newsList);
     }
+
+
 }
