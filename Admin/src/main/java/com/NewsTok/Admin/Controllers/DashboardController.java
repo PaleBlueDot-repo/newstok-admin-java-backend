@@ -5,6 +5,7 @@ import com.NewsTok.Admin.Dtos.newsreelsDto;
 import com.NewsTok.Admin.Models.DashBoard;
 import com.NewsTok.Admin.Models.UserRequest;
 import com.NewsTok.Admin.Models.UserResponse;
+import com.NewsTok.Admin.Services.DashboardService;
 import com.NewsTok.Admin.Services.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,9 @@ public class DashboardController {
 
     @Autowired
     private UserLoginService userLoginService;
+
+    @Autowired
+    private DashboardService dashboardService;
     @Value("${user.email}")
     private String email;
 
@@ -52,8 +56,7 @@ public class DashboardController {
         userRe.setPassword(this.password);
         UserResponse userResponse =userLoginService.loginUser(userRe);
         System.out.println(userResponse.getUser().getUserId());
-        System.out.println(email+password);
-
+        System.out.println(dashboardService.GetDashBoardData(userResponse.getToken()));
 
         return ResponseEntity.ok(dashboard);
 
