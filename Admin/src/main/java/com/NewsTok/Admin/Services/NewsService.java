@@ -1,15 +1,19 @@
 package com.NewsTok.Admin.Services;
 
+import com.NewsTok.Admin.Dtos.ReelsRequestDto;
 import com.NewsTok.Admin.Models.News;
 import com.NewsTok.Admin.Models.ScrapNewsResult;
 import com.NewsTok.Admin.Repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -18,11 +22,9 @@ public class NewsService {
     @Autowired
     private NewsRepository newsRepository;
 
-
     public List<News> getNewsById(Long id) {
         return newsRepository.findById(id);
     }
-
 
     @Autowired
     private WebClient webClient;
@@ -43,6 +45,7 @@ public class NewsService {
                 .block()
                 .get("results");
 
+
         List<News> scrapedNews = scrapedResults.stream().map(result -> {
             News news = new News();
             news.setArticle(result.getArticle());
@@ -52,9 +55,8 @@ public class NewsService {
             news.setNewspaperName(name);
             news.setCategory(category);
             return news;
+
         }).collect(Collectors.toList());
-
-
 
         for (News news : scrapedNews) {
             List<News> existingNews = newsRepository.findByTitleAndLink(news.getTitle(), news.getLink());
@@ -64,9 +66,36 @@ public class NewsService {
             } else {
                 System.out.println("Duplicate news found, not saving: " + news);
             }
-        }
 
+        }
         return scrapedNews;
     }
+
+
+    public List<News> getAllNews() {
+        return  newsRepository.findAll();
+    }
+
+    public List<News> getNewsByIds(ReelsRequestDto ids) {
+
+
+        List<News> temList = new ArrayList<>();
+
+        // Iterate over the list of IDs
+        for (Long id : ids.getIds()) {
+            // Find the News by ID, returns an Optional
+            List<News> singleNews = newsRepository.findById(id);
+
+            // If the News is found, add it to the list
+            temList.add(singleNews.get(0));
+
+        }
+
+        return temList;
+
+
+    }
+
+
 
 }
