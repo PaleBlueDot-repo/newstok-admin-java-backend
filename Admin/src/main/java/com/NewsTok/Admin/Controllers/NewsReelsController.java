@@ -42,19 +42,34 @@ public class NewsReelsController {
         List<News> listOfNews=newsService.getNewsByIds(requestDto);
         List<Reels> createdReels= new ArrayList<>();
         for (News news : listOfNews) {
-            GeminiApiResult geminiApiResult = newsReelsService.createNewsReels(news.getArticle());
+
             Reels singleReel=new Reels();
 
-            singleReel.setBackground_color(geminiApiResult.getBackground_color());
-            singleReel.setFont_color(geminiApiResult.getFont_color());
-            singleReel.setFont_family(geminiApiResult.getFont_family());
-            singleReel.setSummary(geminiApiResult.getSummary());
-            singleReel.setSummary(geminiApiResult.getSummary());
+
             singleReel.setTitle(news.getTitle());
             singleReel.setNewsId(news.getId());
-            String base64Image=newsReelsService.createReelsImage(geminiApiResult.getImage_prompt());
-            singleReel.setImage(base64Image);
-            reelsRepository.save(singleReel);
+
+            List<Reels> reelsListFromDb =reelsRepository.findByNewsId(news.getId());
+
+            if(reelsListFromDb.isEmpty()) {
+                GeminiApiResult geminiApiResult = newsReelsService.createNewsReels(news.getArticle());
+                singleReel.setBackground_color(geminiApiResult.getBackground_color());
+                singleReel.setFont_color(geminiApiResult.getFont_color());
+                singleReel.setFont_family(geminiApiResult.getFont_family());
+                singleReel.setSummary(geminiApiResult.getSummary());
+                singleReel.setSummary(geminiApiResult.getSummary());
+
+                String base64Image=newsReelsService.createReelsImage(geminiApiResult.getImage_prompt());
+                singleReel.setImage(base64Image);
+
+
+                reelsRepository.save(singleReel);
+            }
+            else{
+
+                System.out.println("This reels Created before");
+                singleReel=reelsListFromDb.get(0);
+            }
 
             createdReels.add(singleReel);
 
