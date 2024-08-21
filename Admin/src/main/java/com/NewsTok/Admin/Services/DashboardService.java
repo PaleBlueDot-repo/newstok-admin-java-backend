@@ -20,10 +20,10 @@ public class DashboardService {
     @Autowired
     private UserLoginService userLoginService;
 
-    @Value("${user.email}")
+    @Value("${AdminToUserAuthentication.email}")
     private String email;
 
-    @Value("${user.password}")
+    @Value("${AdminToUserAuthentication.password}")
     private String password;
 
     private final RestTemplate restTemplate;
