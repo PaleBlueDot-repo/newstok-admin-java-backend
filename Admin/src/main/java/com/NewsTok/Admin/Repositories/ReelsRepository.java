@@ -10,5 +10,6 @@ import java.util.List;
 public interface ReelsRepository extends JpaRepository<Reels,Long> {
 
     List<Reels> findByNewsId(Long newsId);
+    Reels findByReelsId(Long reelsId);
 
 }
