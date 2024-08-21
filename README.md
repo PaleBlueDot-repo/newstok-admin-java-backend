@@ -1,8 +1,3 @@
-# newstok-admin-javaBackend
-
-## Java  version 17 require 
-
-
 
 
 # Admin_Server to User_Server Api call
