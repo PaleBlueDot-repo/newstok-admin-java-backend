@@ -4,14 +4,14 @@ import java.util.List;
 
 public class RecommendationResponse {
 
-    private List<Integer> recommendations;
+    private List<Long> recommendations;
     private int user_id;
 
-    public List<Integer> getRecommendations() {
+    public List<Long> getRecommendations() {
         return recommendations;
     }
 
-    public void setRecommendations(List<Integer> recommendations) {
+    public void setRecommendations(List<Long> recommendations) {
         this.recommendations = recommendations;
     }
 

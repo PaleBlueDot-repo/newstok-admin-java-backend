@@ -37,7 +37,7 @@ public class UserLoginService {
         // Send POST request
         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         String responseJson = responseEntity.getBody();
-        System.out.println("Received JSON Response: " + responseJson);
+//        System.out.println("Received JSON Response: " + responseJson);
 
         try {
             return objectMapper.readValue(responseJson, UserResponse.class);
