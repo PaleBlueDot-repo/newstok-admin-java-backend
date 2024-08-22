@@ -102,40 +102,53 @@ The Admin server responds with a list of reels that are recommended for the user
 ```json
 [
     {
-        "reelsId": 4,
-        "newsId": 13,
-        "background_color": "#F0FFF0",
-        "font_color": "#008080",
-        "font_family": "SolaimanLipi",
-        "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAQABAADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2Jygg",
-        "music": null,
-        "summary": "বাংলাদেশে আজ বিকেলের মধ্যেই ফেসবুক-টিকটকসহ সব সামাজিক যোগাযোগ মাধ্যম চালু হচ্ছে।",
-        "title": "আজই চালু হচ্ছে ফেসবুক-মেসেঞ্জার-হোয়াটসঅ্যাপ"
+        "news": {
+            "id": 101,
+            "newspaperName": "The Sports Daily",
+            "category": "sports",
+            "title": "Exciting Sports Event",
+            "article": "This is an article about the latest sports event.",
+            "link": "http://example.com/sports-article",
+            "published": "2024-08-20"
+        },
+        "reels": {
+            "reelsId": 1,
+            "newsId": 101,
+            "background_color": "#FFFFFF",
+            "font_color": "#000000",
+            "font_family": "Arial, sans-serif",
+            "image": "",
+            "music": "data:audio/mp3;base64,//uQxAAA...",
+            "summary": "This is a summary of the news reel content. It provides a brief overview of the key points covered in the reel.",
+            "title": "Breaking News: Major Event"
+        }
     },
     {
-        "reelsId": 5,
-        "newsId": 20,
-        "background_color": "#F0FFF0",
-        "font_color": "#008080",
-        "font_family": "SolaimanLipi",
-        "image": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAQABAADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2Jygg",
-        "music": null,
-        "summary": "বাংলাদেশে আজ বিকেলের মধ্যেই ফেসবুক-টিকটকসহ সব সামাজিক যোগাযোগ মাধ্যম চালু হচ্ছে।",
-        "title": "ফেসবুক-মেসেঞ্জার-হোয়াটসঅ্যাপ"
+        "news": {
+            "id": 103,
+            "newspaperName": "Bangladesh Times",
+            "category": "bangladesh",
+            "title": "Political Landscape in Bangladesh",
+            "article": "A deep dive into Bangladesh’s political situation.",
+            "link": "http://example.com/bangladesh-article",
+            "published": "2024-08-18"
+        },
+        "reels": {
+            "reelsId": 23,
+            "newsId": 103,
+            "background_color": "#CFE2F3",
+            "font_color": "#4A4A4A",
+            "font_family": "Verdana, sans-serif",
+            "image": "",
+            "music": "",
+            "summary": "An insightful analysis of the recent changes in the industry, highlighting key trends and predictions for the future.",
+            "title": "Industry Trends and Future Predictions"
+        }
     }
 ]
 ```
 
-##### Response Field Descriptions
-- **`reelsId`**: The unique identifier for the recommended reel.
-- **`newsId`**: The unique identifier for the associated news article.
-- **`background_color`**: The background color for the reel, in hexadecimal format.
-- **`font_color`**: The font color for the reel, in hexadecimal format.
-- **`font_family`**: The font family to be used for the reel's text.
-- **`image`**: A Base64-encoded string representing the reel's image. This will need to be decoded for viewing.
-- **`music`**: The music associated with the reel (currently `null` in this example).
-- **`summary`**: A brief summary of the news reel content in Bengali.
-- **`title`**: The title of the news reel in Bengali.
+
 
 ---
 
