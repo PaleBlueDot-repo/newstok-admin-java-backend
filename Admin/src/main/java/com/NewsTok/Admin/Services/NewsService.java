@@ -5,6 +5,7 @@ import com.NewsTok.Admin.Models.News;
 import com.NewsTok.Admin.Models.ScrapNewsResult;
 import com.NewsTok.Admin.Repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 
 import org.springframework.stereotype.Service;
@@ -29,12 +30,18 @@ public class NewsService {
     @Autowired
     private WebClient webClient;
 
+    @Value("${news.api.bangla.url}")
+    private String banglaNewsApiUrl;
+
+    @Value("${news.api.english.url}")
+    private String englishNewsApiUrl;
+
     public List<News> createNews(String name, String category) {
         String apiEndpoint;
         if (name.startsWith("Bangla")) {
-            apiEndpoint = "/scraping/scrape_bangla_news";
+            apiEndpoint = banglaNewsApiUrl;
         } else {
-            apiEndpoint = "/scraping/scrape_english_news";
+            apiEndpoint = englishNewsApiUrl;
         }
 
         // Call the Python API to get the scraped news data

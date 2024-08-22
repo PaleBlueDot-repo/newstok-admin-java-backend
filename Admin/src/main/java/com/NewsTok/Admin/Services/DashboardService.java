@@ -28,10 +28,12 @@ public class DashboardService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Value("${dashboard.api.url}")
+    private String dashboardApiUrl;  // Injecting the URL from properties
 
-    // Constructor-based dependency injection
     public DashboardService() {
-        this.restTemplate = new RestTemplate(); // Initialize RestTemplate here
+
+        this.restTemplate = new RestTemplate();
     }
 
      public DashBoard GetDashBoardData() {
@@ -41,7 +43,7 @@ public class DashboardService {
          UserResponse userResponse =userLoginService.loginUser(userRe);
          String JwtToken=userResponse.getToken();
 
-         String url = "http://localhost:8081/user/getDashboard";
+         String url = dashboardApiUrl;
 
          HttpHeaders headers = new HttpHeaders();
          headers.set("Authorization", "Bearer " + JwtToken);
@@ -49,13 +51,10 @@ public class DashboardService {
 
          HttpEntity<DashBoard> requestEntity = new HttpEntity<>(headers);
 
-         // Send GET request
-//         here from user response will in Dashboard model format
+
 
          ResponseEntity<DashBoard> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, DashBoard.class);
-//         ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
 
-         // Return the response body (assuming it's a String, but you can change the type as needed)
          return responseEntity.getBody();
      }
 

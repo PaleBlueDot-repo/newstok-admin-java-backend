@@ -36,10 +36,10 @@ public class SignupController {
         return "Hello I'm Admin";
     }
 
-//    @GetMapping("/testToken")
-//    public String testToken(){
-//        return "Hello I'm Testing Token";
-//    }
+    @GetMapping("/testToken")
+    public String testToken(){
+        return "Hello I'm Testing Token";
+    }
 
 
     @PostMapping("/signup")

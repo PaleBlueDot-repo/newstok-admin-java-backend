@@ -42,36 +42,36 @@ public class ReelsRecommendationController {
     public ResponseEntity<List<FinalRecommendationResponse>> getAllReels(@RequestBody UserInteractionRequest userInteractionRequest) {
 
         List<Reels> finalListOfReels=new ArrayList<>();
+//        reelsrecommendationsService will get  recommendations from ML recommender
+        RecommendationResponse recommendationResponse=reelsrecommendationsService.getReelsRecommendation(userInteractionRequest);
+        List<Long> recommendationList= recommendationResponse.getRecommendations();
 
-//        RecommendationResponse recommendationResponse=reelsrecommendationsService.getReelsRecommendation(userInteractionRequest);
-//        List<Long> recommendationList= recommendationResponse.getRecommendations();
-//temList will be replace with recommendationList need to uncomment above 2 line
-        List<Long> temList=new ArrayList<>();
-        temList.add(1L);
-        temList.add(2L);
 
-        List<Reels> listOfReelsByMlRecommended=reelsRepository.findAllById(temList);
+        List<Reels> listOfReelsByMlRecommended=reelsRepository.findAllById(recommendationList);
+
+//   reelsRecommendationOnInterest  will recommend reels based on  user Interest
         List<Reels> reelsBasedOnInterest=reelsRecommendationOnInterest.getReelsRecommendationBasedOnInterest(userInteractionRequest.getInterest());
         Set<weightDto> reelsSet = new HashSet<>();
-
+//       reelsMap will only send unique reels
         Map<Long, weightDto> reelsMap = new HashMap<>();
-         int weightCount=0;
 
+        int weightCount=0;
+//        weightCount will help to sort the reels from best recommended reels to worst
+
+
+        //      saving unique reels only
         for(Reels eachReels : listOfReelsByMlRecommended){
             weightCount+=1;
-
             weightDto temDto=new weightDto();
             temDto.setReels(eachReels);
             temDto.setWeight(weightCount);
-
-            reelsSet.add(temDto);
-
             if(!reelsMap.containsKey(eachReels.getReelsId())){
                 reelsMap.put(eachReels.getReelsId(),temDto);
             }
         }
 
 
+//      saving unique reels only
         for(Reels eachReels : reelsBasedOnInterest){
             weightCount+=1;
             weightDto temDto=new weightDto();
@@ -85,8 +85,8 @@ public class ReelsRecommendationController {
 
 
 
-
-        int cntOfRecom=finalListOfReels.size();
+//      we will select best n reels to send to user feed
+        int cntOfRecom=reelsMap.size();
         int rem=0;
 
         if(cntOfRecom<this.n){
@@ -94,17 +94,19 @@ public class ReelsRecommendationController {
         }
 
         List<Reels> extraReels=reelsRepository.findAll();
-        Collections.shuffle(extraReels);
 
+        Collections.shuffle(extraReels);
+//lastly check on whole reels database and added to reelsMap  for remaining reels to fill max reels number(n)
         for(Reels eachReels : extraReels){
-            if(reelsSet.size()>rem){
+            if(reelsMap.size()>rem){
                 break;
             }
+
             weightCount+=1;
             weightDto temDto=new weightDto();
             temDto.setReels(eachReels);
             temDto.setWeight(weightCount);
-            reelsSet.add(temDto);
+
 
             if(!reelsMap.containsKey(eachReels.getReelsId())){
                 reelsMap.put(eachReels.getReelsId(),temDto);
@@ -114,15 +116,12 @@ public class ReelsRecommendationController {
 
         List<weightDto> weightList=new ArrayList<>();
 
-//        for(weightDto eachSetData : reelsSet){
-//            weightList.add(eachSetData);
-//        }
-
         for (Map.Entry<Long, weightDto> entry : reelsMap.entrySet()) {
-//            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue().getName());
             weightList.add(entry.getValue());
         }
 
+
+//      sorting based on best weight score (low score is best)
         Collections.sort(weightList, new Comparator<weightDto>() {
             @Override
             public int compare(weightDto w1, weightDto w2) {

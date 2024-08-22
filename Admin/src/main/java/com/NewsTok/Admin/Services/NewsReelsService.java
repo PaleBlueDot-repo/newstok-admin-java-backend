@@ -4,6 +4,7 @@ import com.NewsTok.Admin.Models.GeminiApiResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,16 @@ public class NewsReelsService {
     private WebClient webClient;
 
 
-    private final String apiEndpoint = "http://127.0.0.1:5000/ml/process-data";
+    @Value("${newsreels.api.process.url}")
+    private String processApiEndpoint;
+
+    @Value("${newsreels.api.image.url}")
+    private String imageApiEndpoint;
+
 
     public GeminiApiResult createNewsReels(String inputText) {
         return webClient.post()
-                .uri(apiEndpoint)
+                .uri(processApiEndpoint)
                 .bodyValue(Map.of("input_text", inputText))
                 .retrieve()
                 .bodyToMono(GeminiApiResult.class)
@@ -35,7 +41,7 @@ public class NewsReelsService {
 
     public String createReelsImage(String prompt) {
         byte[] imageBytes = webClient.post()
-                .uri("http://127.0.0.1:5000/ml/generate-image")
+                .uri(imageApiEndpoint)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of("prompt", prompt))
                 .retrieve()

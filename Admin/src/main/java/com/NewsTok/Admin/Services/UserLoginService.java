@@ -2,6 +2,7 @@ package com.NewsTok.Admin.Services;
 
 import com.NewsTok.Admin.Models.UserRequest;
 import com.NewsTok.Admin.Models.UserResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,13 +17,16 @@ public class UserLoginService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    @Value("${user.login.api.url}")
+    private String userLoginApiUrl;
+
     // Constructor-based dependency injection
     public UserLoginService() {
         this.restTemplate = new RestTemplate(); // Initialize RestTemplate here
     }
 
     public UserResponse loginUser(UserRequest userRequest) {
-        String url = "http://localhost:8081/user/login";
+        String url = userLoginApiUrl;
 
         // Convert UserRequest to JSON
         String userRequestJson = convertUserRequestToJson(userRequest);
