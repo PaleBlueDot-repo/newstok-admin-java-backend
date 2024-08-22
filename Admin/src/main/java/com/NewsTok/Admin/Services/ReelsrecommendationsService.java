@@ -16,12 +16,16 @@ public class ReelsrecommendationsService {
     @Value("${reels.recommendation.api.url}")
     private String apiEndpoint;
 
+    @Value("${api.key}")
+    private String apiKey;
+
     public RecommendationResponse getReelsRecommendation(UserInteractionRequest userInteractionRequest) {
         // Build the WebClient instance with a default configuration
         WebClient webClient = webClientBuilder.build();
         System.out.println(userInteractionRequest.getInterest());
         return webClient.post()
                 .uri(apiEndpoint)
+                .header("x-api-key", apiKey)
                 .bodyValue(userInteractionRequest) // Use the proper request object
                 .retrieve()
                 .bodyToMono(RecommendationResponse.class) // Use the correct response DTO

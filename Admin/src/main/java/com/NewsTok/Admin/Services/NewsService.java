@@ -35,6 +35,8 @@ public class NewsService {
 
     @Value("${news.api.english.url}")
     private String englishNewsApiUrl;
+    @Value("${api.key}")
+    private String apiKey;
 
     public List<News> createNews(String name, String category) {
         String apiEndpoint;
@@ -47,6 +49,7 @@ public class NewsService {
         // Call the Python API to get the scraped news data
         List<ScrapNewsResult> scrapedResults = webClient.get()
                 .uri(apiEndpoint + "?topic={topic}", category)
+                .header("x-api-key", apiKey)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, List<ScrapNewsResult>>>() {})
                 .block()

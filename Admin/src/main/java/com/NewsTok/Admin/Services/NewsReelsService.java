@@ -29,10 +29,13 @@ public class NewsReelsService {
     @Value("${newsreels.api.image.url}")
     private String imageApiEndpoint;
 
+    @Value("${api.key}")
+    private String apiKey;
 
     public GeminiApiResult createNewsReels(String inputText) {
         return webClient.post()
                 .uri(processApiEndpoint)
+                .header("x-api-key", apiKey)
                 .bodyValue(Map.of("input_text", inputText))
                 .retrieve()
                 .bodyToMono(GeminiApiResult.class)
@@ -42,6 +45,7 @@ public class NewsReelsService {
     public String createReelsImage(String prompt) {
         byte[] imageBytes = webClient.post()
                 .uri(imageApiEndpoint)
+                .header("x-api-key", apiKey)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(Map.of("prompt", prompt))
                 .retrieve()
