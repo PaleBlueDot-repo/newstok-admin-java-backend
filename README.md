@@ -1,158 +1,175 @@
+# NewsTok Admin Backend
 
+## Overview
 
-# Admin_Server to User_Server Api call
-### API Documentation: `GET /user/getDashboard`
+The NewsTok Admin Backend is a Spring Boot application designed to manage news, reels, and user interactions for the NewsTok platform. It provides endpoints for admin login, user management, news processing, and reel recommendations.
 
-This document describes the endpoint `GET /user/getDashboard`, which the Admin server can call to retrieve a JSON response from the User server. The data returned provides an overview of the user's interaction with news reels.
+## Table of Contents
 
-#### Endpoint
-- **URL**: `http://localhost:8081/user/getDashboard`
-- **Method**: `GET`
-- **Response Format**: JSON
+- [Features](features)
+- [Setup and Installation](#setup-and-installation)
+- [Configuration](#configuration)
+- [Endpoints](#endpoints)
+## Features
 
-#### Response JSON Structure
-The JSON response from the User server will include details about the reels that the user has interacted with, as well as aggregated statistics across all reels. All data fields will be returned as strings.
+- **Admin Authentication:** Secure login with JWT tokens.
+- **Dashboard Data:** Retrieve and manage dashboard information.
+- **News Management:** Create and retrieve news articles.
+- **Reels Management:** Generate and manage news reels.
+- **Recommendations:** Get recommendations based on user interactions.
 
-```json
-{
-    "reelsList": [
-        {
-            "reelsId": "23",
-            "views": "20",
-            "likes": "10",
-            "status": "1"
-        }
-    ],
-    "published": "70",
-    "watchtime": "320",
-    "likes": "150",
-    "newsReel_Views": "60.5k"
-}
-```
+## Setup and Installation
 
-#### Response Field Descriptions
+1. **Install Java 17**
 
-- **`reelsList`**: An array of objects, where each object represents a reel that the user has interacted with at least once.
-    - **`reelsId`**: A unique identifier for the reel.
-    - **`views`**: The total number of views this reel has received across all users of the app.
-    - **`likes`**: The total number of likes this reel has received across all users of the app.
-    - **`status`**: Indicates the current status of the reel.
-        - **`status: "1"`**: The reel is uploaded on the user's feed.
+   Ensure you have Java 17 installed on your machine. You can verify this by running the following command:
 
-- **`published`**: The total number of reels that exist on the user's side.
+   ```bash
+   java -version
+   ```
 
-- **`watchtime`**: The total watch time (in minutes) accumulated across all users for all reels.
+   If you do not have Java 17, download and install it from the [official website](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html).
 
-- **`likes`**: The total number of likes accumulated across all users for all reels.
+2. **Clone the Repository**
 
-- **`newsReel_Views`**: The total number of views accumulated across all users for all reels, represented as a string (e.g., `"60.5k"` for 60,500 views).
+   ```bash
+   git clone https://github.com/PaleBlueDot-repo/newstok-admin-java-backend.git
+   ```
 
+3. **Navigate to the Project Directory**
 
-# User_Server to Admin_Server Api call
+   ```bash
+   cd newstok-admin-java-backend/cd Admin 
+   ```
 
-### API Documentation: Reels Recommendation System
+4. **Setup Database Using XAMPP**
 
-This document describes the communication between the User server and Admin server for the Reels Recommendation System. The User server sends a POST request to the Admin server, which returns a list of recommended reels based on the user's interactions.
+   - Open XAMPP and start the **MySQL** service.
+   - Open **phpMyAdmin** (usually available at `http://localhost/phpmyadmin`).
+   - Create a new database named `admindb`.
 
-- **Endpoint**: `http://localhost:8080/admin/getReelsRecommendation`
-- **Method**: `POST`
-- **Request Body**: JSON
+   Ensure that the MySQL port is set to `3306` (which is the default port in the `application.properties`).
 
-##### Request JSON Structure
-The User server sends a JSON object with the user's interaction data and interests to the Admin server. The interactions include a list of reels that the user has interacted with, along with a score for each interaction.
+5. **Build the Project**
 
-```json
-{
-    "user_id": 1,
-    "interactions": [
-        {"user_id": 1, "reels_id": 1, "score": 5.0},
-        {"user_id": 1, "reels_id": 2, "score": 3.0},
-        {"user_id": 1, "reels_id": 3, "score": 4.0},
-        {"user_id": 2, "reels_id": 1, "score": 2.0},
-        {"user_id": 2, "reels_id": 3, "score": 5.0},
-        {"user_id": 3, "reels_id": 2, "score": 4.0},
-        {"user_id": 3, "reels_id": 4, "score": 5.0}
-    ],
-    "interest": "city,bd"
-}
-```
-### Interest Domain{
+   ```bash
+   ./mvnw clean install
+   ```
 
-- bangla_newspaper = bangladesh,world,sports,science-technology,lifestyle,exception
--  english_newspaper = business-economy,city,front-page,back-page,entertainment,national,sports
+6. **Run the Application**
 
-}
-##### Request Field Descriptions
-- **`user_id`**: The ID of the user for whom the recommendation is being requested.
-- **`interactions`**: A list of interactions where each object contains:
-    - **`user_id`**: The ID of the user who interacted with the reel.
-    - **`reels_id`**: The ID of the reel.
-    - **`score`**: A score representing the user's interaction with the reel.
-- **`interest`**: A comma-separated string indicating the user's interests.
+   ```bash
+   ./mvnw spring-boot:run
+   ```
 
----
+## Configuration
 
-#### 2. Admin Server Response: Reels Recommendation
+### `example.application.properties` File
 
-- **Response Format**: JSON (List of Objects)
+The application configuration is managed through the `application.properties` file. An example configuration file named `example.application.properties` is provided in the repository. You need to create a `application.properties` file in the `src/main/resources` directory by copying the example file and filling in the necessary fields.
 
-##### Response JSON Structure
-The Admin server responds with a list of reels that are recommended for the user. Each reel object includes necessary information for display, including the reel ID, news ID, styling details, and a Base64-encoded image.
+### Steps to Create and Configure `application.properties`
 
-```json
-[
-    {
-        "news": {
-            "id": 101,
-            "newspaperName": "The Sports Daily",
-            "category": "sports",
-            "title": "Exciting Sports Event",
-            "article": "This is an article about the latest sports event.",
-            "link": "http://example.com/sports-article",
-            "published": "2024-08-20"
-        },
-        "reels": {
-            "reelsId": 1,
-            "newsId": 101,
-            "background_color": "#FFFFFF",
-            "font_color": "#000000",
-            "font_family": "Arial, sans-serif",
-            "image": "",
-            "music": "data:audio/mp3;base64,//uQxAAA...",
-            "summary": "This is a summary of the news reel content. It provides a brief overview of the key points covered in the reel.",
-            "title": "Breaking News: Major Event"
-        }
-    },
-    {
-        "news": {
-            "id": 103,
-            "newspaperName": "Bangladesh Times",
-            "category": "bangladesh",
-            "title": "Political Landscape in Bangladesh",
-            "article": "A deep dive into Bangladesh’s political situation.",
-            "link": "http://example.com/bangladesh-article",
-            "published": "2024-08-18"
-        },
-        "reels": {
-            "reelsId": 23,
-            "newsId": 103,
-            "background_color": "#CFE2F3",
-            "font_color": "#4A4A4A",
-            "font_family": "Verdana, sans-serif",
-            "image": "",
-            "music": "",
-            "summary": "An insightful analysis of the recent changes in the industry, highlighting key trends and predictions for the future.",
-            "title": "Industry Trends and Future Predictions"
-        }
-    }
-]
-```
+1. **Copy the Example File**
 
+   In the root of the project, there is an `example.application.properties` file. Copy this file to create your `application.properties`:
 
+2. **Fill in the Required Fields**
 
----
+   Open the newly created `application.properties` file and fill in the required fields with your specific configuration details. Below is a template and explanations for each property:
 
-### Notes
-- **Image Handling**: The `image` field is Base64-encoded. To display the image, decode this string on the frontend or in the application where the reel information is rendered.
-- **Data Format**: All string fields, including numbers and IDs, are provided in string format.
+   ```properties
+   # Spring Boot Application Name
+   spring.application.name=admin
 
+   # Database Configuration
+   spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+   spring.datasource.url=jdbc:mysql://localhost:3306/admindb
+   spring.datasource.username=root
+   spring.datasource.password=YOUR_DB_PASSWORD_HERE
+   # Ensure the port matches your MySQL setup; default is 3306
+
+   # JPA/Hibernate Configuration
+   spring.jpa.show-sql=true
+   spring.jpa.hibernate.ddl-auto=update
+
+   # JWT Configuration
+   security.jwt.secret-key=YOUR_SECRET_KEY_HERE
+   security.jwt.expiration-time-ms=86400000
+   security.jwt.issuer=YOUR_ISSUER_HERE
+
+   # Admin Authentication
+   AdminToUserAuthentication.email=YOUR_ADMIN_EMAIL_HERE
+   AdminToUserAuthentication.password=YOUR_ADMIN_PASSWORD_HERE
+
+   # Codec Configuration
+   spring.codec.max-in-memory-size=1000KB
+
+   # Reels Recommendation Settings
+   MaxNumberOfReels.n=30
+
+   # External API URLs
+   reels.recommendation.api.url=http://localhost:5000/ml/recommendReels
+   dashboard.api.url=http://localhost:8080/user/getDashboard
+   newsreels.api.process.url=http://127.0.0.1:5000/ml/process-data
+   newsreels.api.image.url=http://127.0.0.1:5000/ml/generate-image
+   news.api.bangla.url=/scraping/scrape_bangla_news
+   news.api.english.url=/scraping/scrape_english_news
+   user.login.api.url=http://localhost:8080/user/login
+
+   # API Key for External Services
+   api.key=YOUR_API_KEY_HERE
+
+   # Eureka Client Configuration
+   eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka/
+   ```
+
+### Property Explanations
+
+- **`spring.application.name`**: The name of the Spring Boot application.
+- **`spring.datasource.driver-class-name`**: The driver class name for the database.
+- **`spring.datasource.url`**: The URL for connecting to the MySQL database. Ensure the port matches your MySQL setup (default is 3306).
+- **`spring.datasource.username`**: The username for the database.
+- **`spring.datasource.password`**: The password for the database. **(Fill this in with your database password)**
+- **`spring.jpa.show-sql`**: If true, SQL statements will be logged to the console.
+- **`spring.jpa.hibernate.ddl-auto`**: Specifies the database schema management. `update` will update the schema automatically.
+- **`security.jwt.secret-key`**: The secret key used to sign JWT tokens. **(Set your secret key)**
+- **`security.jwt.expiration-time-ms`**: The expiration time for JWT tokens in milliseconds (e.g., 86400000 ms = 1 day).
+- **`security.jwt.issuer`**: The issuer of the JWT tokens. **(Set your issuer name)**
+- **`AdminToUserAuthentication.email`**: The default email for admin authentication. **(Set your admin email)**
+- **`AdminToUserAuthentication.password`**: The default password for admin authentication. **(Set your admin password)**
+- **`spring.codec.max-in-memory-size`**: Maximum size of in-memory data (e.g., for file uploads).
+- **`MaxNumberOfReels.n`**: The maximum number of reels to recommend.
+- **`reels.recommendation.api.url`**: URL for the external reels recommendation API.
+- **`dashboard.api.url`**: URL for retrieving dashboard data.
+- **`newsreels.api.process.url`**: URL for processing news data.
+- **`newsreels.api.image.url`**: URL for generating reel images.
+- **`news.api.bangla.url`**: Endpoint for scraping Bangla news.
+- **`news.api.english.url`**: Endpoint for scraping English news.
+- **`user.login.api.url`**: URL for user login.
+- **`api.key`**: API key for authentication with external services. **(Set your API key)**
+- **`eureka.client.serviceUrl.defaultZone`**: URL for the Eureka service registry.
+
+## Endpoints
+
+### Authentication
+
+- **POST /admin/login**: Authenticates an admin and returns a JWT token.
+- **POST /admin/signup**: Registers a new admin user.
+
+### Dashboard
+
+- **GET /admin/getDashboard**: Retrieves full dashboard data.
+
+### News
+
+- **POST /admin/getNews**: Creates news based on the provided name and category.
+- **GET /admin/getAllNews**: Retrieves all news articles.
+
+### Reels
+
+- **POST /admin/getAllReels**: Retrieves and creates reels based on provided news IDs.
+
+### Recommendations
+
+- **POST /admin/getReelsRecommendation**: Retrieves recommended reels based on user interaction data.
