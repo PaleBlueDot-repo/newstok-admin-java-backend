@@ -5,14 +5,13 @@ public class UserResponse {
     private String token;
 
     // Getters and Setters
-
     public static class User {
         private Long userId; // Renamed from id to userId
         private String email;
         private String password;
         private String createdAt;
         private String name;
-        private String newsInterest; // Added field
+        private String interests; // Added field
 
         public Long getUserId() { // Renamed getter
             return userId;
@@ -54,12 +53,12 @@ public class UserResponse {
             this.name = name;
         }
 
-        public String getNewsInterest() { // Getter for new field
-            return newsInterest;
+        public String getInterests() {
+            return interests;
         }
 
-        public void setNewsInterest(String newsInterest) { // Setter for new field
-            this.newsInterest = newsInterest;
+        public void setInterests(String interests) {
+            this.interests = interests;
         }
     }
 
