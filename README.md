@@ -5,10 +5,9 @@
 The NewsTok Admin Backend is a Spring Boot application designed to manage news, reels, and user interactions for the NewsTok platform. It provides endpoints for admin login, user management, news processing, and reel recommendations.
 
 ## Table of Contents
-
-- [Features](features)
 - [Setup and Installation](#setup-and-installation)
 - [Configuration](#configuration)
+  - [Property Explanations](#property-explanations)
 - [Endpoints](#endpoints)
 ## Features
 
@@ -39,7 +38,7 @@ The NewsTok Admin Backend is a Spring Boot application designed to manage news, 
 3. **Navigate to the Project Directory**
 
    ```bash
-   cd newstok-admin-java-backend/cd Admin 
+   cd newstok-admin-java-backend/Admin 
    ```
 
 4. **Setup Database Using XAMPP**
