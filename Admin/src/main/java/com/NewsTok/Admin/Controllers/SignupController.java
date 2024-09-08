@@ -2,7 +2,9 @@ package com.NewsTok.Admin.Controllers;
 
 
 import com.NewsTok.Admin.Dtos.SignupDto;
+import com.NewsTok.Admin.Exception.AdminNotFoundException;
 import com.NewsTok.Admin.Models.Admin;
+import com.NewsTok.Admin.Models.Reels;
 import com.NewsTok.Admin.Repositories.AdminRepository;
 import com.NewsTok.Admin.Services.JwtService;
 import jakarta.validation.Valid;
@@ -41,6 +43,14 @@ public class SignupController {
         return "Hello I'm Testing Token";
     }
 
+    @GetMapping("/getAdmin/{adminEmail}")
+    public ResponseEntity<Admin> getAdminByEmail(@PathVariable String adminEmail) {
+        Admin admin=adminRepository.findByEmail(adminEmail);
+        if(admin==null){
+            throw new AdminNotFoundException("This Email has not admin");
+        }
+        return ResponseEntity.ok(admin);
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<Object> register(

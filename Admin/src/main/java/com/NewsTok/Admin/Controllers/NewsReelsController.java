@@ -1,6 +1,8 @@
 package com.NewsTok.Admin.Controllers;
 
 import com.NewsTok.Admin.Dtos.ReelsRequestDto;
+import com.NewsTok.Admin.Exception.GeminiApiResultNotFoundException;
+import com.NewsTok.Admin.Exception.ImageProcessingException;
 import com.NewsTok.Admin.Models.GeminiApiResult;
 import com.NewsTok.Admin.Models.News;
 import com.NewsTok.Admin.Models.Reels;
@@ -44,7 +46,7 @@ public class NewsReelsController {
         for (News news : listOfNews) {
 
             Reels singleReel=new Reels();
-
+            Boolean exceptionFlag=false;
 
             singleReel.setTitle(news.getTitle());
             singleReel.setNewsId(news.getId());
@@ -52,18 +54,41 @@ public class NewsReelsController {
             List<Reels> reelsListFromDb =reelsRepository.findByNewsId(news.getId());
 
             if(reelsListFromDb.isEmpty()) {
-                GeminiApiResult geminiApiResult = newsReelsService.createNewsReels(news.getArticle());
-                singleReel.setBackground_color(geminiApiResult.getBackground_color());
-                singleReel.setFont_color(geminiApiResult.getFont_color());
-                singleReel.setFont_family(geminiApiResult.getFont_family());
-                singleReel.setSummary(geminiApiResult.getSummary());
-                singleReel.setSummary(geminiApiResult.getSummary());
 
-                String base64Image=newsReelsService.createReelsImage(geminiApiResult.getImage_prompt());
-                singleReel.setImage(base64Image);
+                try {
+
+                    GeminiApiResult geminiApiResult = newsReelsService.createNewsReels(news.getArticle());
+                    String base64Image = newsReelsService.createReelsImage(geminiApiResult.getImage_prompt());
+                    String base64Music=newsReelsService.createReelsMusic(geminiApiResult.getMusic_prompt());
+                    singleReel.setBackground_color(geminiApiResult.getBackground_color());
+                    singleReel.setFont_color(geminiApiResult.getFont_color());
+                    singleReel.setFont_family(geminiApiResult.getFont_family());
+                    singleReel.setSummary(geminiApiResult.getSummary());
+                    singleReel.setSummary(geminiApiResult.getSummary());
+
+                    singleReel.setImage(base64Image);
+                    singleReel.setMusic(base64Music);
+
+                } catch (GeminiApiResultNotFoundException e) {
+                    // Handle the case where the Gemini API result is not found or invalid
+                    System.err.println("Error creating news reels: " + e.getMessage());
+                    exceptionFlag=true;
+
+                } catch (ImageProcessingException e) {
+                    System.err.println("Error creating image: " + e.getMessage());
+                    exceptionFlag=true;
 
 
-                reelsRepository.save(singleReel);
+                } catch (Exception e) {
+
+                    System.err.println("An unexpected error occurred: " + e.getMessage());
+                    exceptionFlag=true;
+                }
+
+
+
+
+                if(!exceptionFlag)  reelsRepository.save(singleReel);
             }
             else{
 
@@ -71,7 +96,8 @@ public class NewsReelsController {
                 singleReel=reelsListFromDb.get(0);
             }
 
-            createdReels.add(singleReel);
+
+          if(!exceptionFlag)  createdReels.add(singleReel);
 
 //            System.out.println(base64Image);
         }
