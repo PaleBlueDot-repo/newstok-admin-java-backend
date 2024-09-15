@@ -12,6 +12,7 @@ public class WebClientConfig {
     public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl("http://127.0.0.1:5000") // Set the base URL of your Python API
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(5 * 1024 * 1024)) // Set buffer size to 5 MB
                 .build();
     }
 }

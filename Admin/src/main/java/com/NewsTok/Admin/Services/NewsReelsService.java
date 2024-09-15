@@ -3,6 +3,8 @@ package com.NewsTok.Admin.Services;
 import com.NewsTok.Admin.Exception.GeminiApiResultNotFoundException;
 import com.NewsTok.Admin.Models.GeminiApiResult;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import org.springframework.web.reactive.function.client.ClientResponse;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Map;
 
@@ -111,7 +115,7 @@ public class NewsReelsService {
         }
     }
 
-    public String createReelsMusic(String prompt) {
+    public String createReelsMusic(String prompt) throws IOException {
         byte[] musicBytes = webClient.post()
                 .uri(musicApiEndpoint)
                 .header("x-api-key", apiKey)
@@ -126,7 +130,15 @@ public class NewsReelsService {
 
         if (musicBytes != null) {
             // Encode the byte array as a Base64 string
-            return Base64.getEncoder().encodeToString(musicBytes);
+            String jsonResponse = new String(musicBytes, "UTF-8");
+
+            // Parse JSON response
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(jsonResponse);
+
+            // Extract the 'music' field
+            String musicBase64 = rootNode.path("music").asText();
+            return musicBase64;
         } else {
 
             return null;

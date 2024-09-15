@@ -17,6 +17,8 @@ public class Reels {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String image;
+
+
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String music;
@@ -26,6 +28,14 @@ public class Reels {
     @Lob
     @Column(columnDefinition = "LONGTEXT")
     private String title;
+
+    public String getMusic() {
+        return music;
+    }
+
+    public void setMusic(String music) {
+        this.music = music;
+    }
 
     public Long getReelsId() {
         return reelsId;
@@ -75,13 +85,7 @@ public class Reels {
         this.image = image;
     }
 
-    public String getMusic() {
-        return music;
-    }
 
-    public void setMusic(String music) {
-        this.music = music;
-    }
 
     public String getSummary() {
         return summary;
