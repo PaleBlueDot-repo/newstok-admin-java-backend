@@ -173,3 +173,60 @@ The application configuration is managed through the `application.properties` fi
 ### Recommendations
 
 - **POST /admin/getReelsRecommendation**: Retrieves recommended reels based on user interaction data.
+
+
+
+
+
+Changing Maximum Packet Size Limit in SQL
+
+
+## MySQL
+
+### On Linux
+
+1. **Locate Configuration File**
+   - Find the MySQL configuration file, typically `my.cnf` or `my.ini`.
+   - Common paths: `/etc/mysql/my.cnf` or `/etc/my.cnf`.
+
+2. **Edit Configuration File**
+   - Open the file with root privileges:
+     ```bash
+     sudo nano /etc/mysql/my.cnf
+     ```
+   - Add or modify the `max_allowed_packet` setting under the `[mysqld]` section:
+     ```ini
+     [mysqld]
+     max_allowed_packet=64M
+     ```
+   - Save and close the file.
+
+3. **Restart MySQL Service**
+   - Restart the MySQL service to apply changes:
+     ```bash
+     sudo systemctl restart mysql
+     ```
+   - Alternatively:
+     ```bash
+     sudo service mysql restart
+     ```
+
+### On Windows
+
+1. **Locate Configuration File**
+   - Find `my.ini` in the MySQL installation directory, such as `C:\ProgramData\MySQL\MySQL Server X.Y\my.ini`.
+
+2. **Edit Configuration File**
+   - Open `my.ini` with a text editor (Notepad) as an administrator.
+   - Add or modify the `max_allowed_packet` setting under the `[mysqld]` section:
+     ```ini
+     [mysqld]
+     max_allowed_packet=64M
+     ```
+   - Save and close the file.
+
+3. **Restart MySQL Service**
+   - Open Services from the Start menu.
+   - Locate and restart the MySQL service.
+
+
