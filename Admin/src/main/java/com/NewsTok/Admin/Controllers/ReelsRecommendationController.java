@@ -42,36 +42,45 @@ public class ReelsRecommendationController {
     public ResponseEntity<List<FinalRecommendationResponse>> getAllReels(@RequestBody UserInteractionRequest userInteractionRequest) {
 
         List<Reels> finalListOfReels=new ArrayList<>();
-//        reelsrecommendationsService will get  recommendations from ML recommender
-        RecommendationResponse recommendationResponse=reelsrecommendationsService.getReelsRecommendation(userInteractionRequest);
-        List<Long> recommendationList= recommendationResponse.getRecommendations();
 
-
-        List<Reels> listOfReelsByMlRecommended=reelsRepository.findAllById(recommendationList);
-
-//   reelsRecommendationOnInterest  will recommend reels based on  user Interest
-        List<Reels> reelsBasedOnInterest=reelsRecommendationOnInterest.getReelsRecommendationBasedOnInterest(userInteractionRequest.getInterest());
         Set<weightDto> reelsSet = new HashSet<>();
 //       reelsMap will only send unique reels
         Map<Long, weightDto> reelsMap = new HashMap<>();
 
-        int weightCount=0;
-//        weightCount will help to sort the reels from best recommended reels to worst
+        int weightCount = 0;
+//       weightCount will help to sort the reels from best recommended reels to worst
 
 
-        //      saving unique reels only
-        for(Reels eachReels : listOfReelsByMlRecommended){
-            weightCount+=1;
-            weightDto temDto=new weightDto();
-            temDto.setReels(eachReels);
-            temDto.setWeight(weightCount);
-            if(!reelsMap.containsKey(eachReels.getReelsId())){
-                reelsMap.put(eachReels.getReelsId(),temDto);
+//       reelsrecommendationsService will get  recommendations from ML recommender
+        if(!userInteractionRequest.getInteractions().isEmpty()) {
+
+
+            RecommendationResponse recommendationResponse = reelsrecommendationsService.getReelsRecommendation(userInteractionRequest);
+            List<Long> recommendationList = recommendationResponse.getRecommendations();
+
+
+            List<Reels> listOfReelsByMlRecommended = reelsRepository.findAllById(recommendationList);
+
+//   reelsRecommendationOnInterest  will recommend reels based on  user Interest
+
+
+            //      saving unique reels only
+            for (Reels eachReels : listOfReelsByMlRecommended) {
+                weightCount += 1;
+                weightDto temDto = new weightDto();
+                temDto.setReels(eachReels);
+                temDto.setWeight(weightCount);
+                if (!reelsMap.containsKey(eachReels.getReelsId())) {
+                    reelsMap.put(eachReels.getReelsId(), temDto);
+                }
             }
+
         }
 
 
 //      saving unique reels only
+        List<Reels> reelsBasedOnInterest=reelsRecommendationOnInterest.getReelsRecommendationBasedOnInterest(userInteractionRequest.getInterest());
+
         for(Reels eachReels : reelsBasedOnInterest){
             weightCount+=1;
             weightDto temDto=new weightDto();

@@ -22,6 +22,7 @@ public class ReelsrecommendationsService {
     public RecommendationResponse getReelsRecommendation(UserInteractionRequest userInteractionRequest) {
         // Build the WebClient instance with a default configuration
         WebClient webClient = webClientBuilder.build();
+
         System.out.println(userInteractionRequest.getInterest());
         return webClient.post()
                 .uri(apiEndpoint)
