@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class FinalResponseService {
     @Autowired
@@ -16,8 +18,8 @@ public class FinalResponseService {
     public List<FinalRecommendationResponse> PrepareData(List<Reels> listOfReels){
         List<FinalRecommendationResponse> listOfFinalResponse=new ArrayList<>();
         for(Reels eachReels : listOfReels){
-            List<News> listOfNews=newsRepository.findById(eachReels.getNewsId());
-            News news=listOfNews.get(0);
+            Optional<News> listOfNews=newsRepository.findById(eachReels.getNewsId());
+            News news=listOfNews.get();
             FinalRecommendationResponse tem=new FinalRecommendationResponse();
             tem.setNews(news);
             tem.setReels(eachReels);

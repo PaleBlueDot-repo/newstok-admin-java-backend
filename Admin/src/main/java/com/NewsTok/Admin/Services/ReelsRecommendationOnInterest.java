@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReelsRecommendationOnInterest {
@@ -25,9 +26,10 @@ public class ReelsRecommendationOnInterest {
         List<Reels> listOfReels=reelsRepository.findAll();
         for (Reels eachReels : listOfReels) {
            Long NewsId=eachReels.getNewsId();
-           List<News> newslist=newsRepository.findById(NewsId);
+          Optional<News> newslist=newsRepository.findById(NewsId);
+
            if(!newslist.isEmpty()) {
-               News news = newslist.get(0);
+               News news = newslist.get();
                for (String eachInterest : interestsArray) {
                    System.out.println(eachInterest);
                    if (news.getCategory().equals(eachInterest)) {

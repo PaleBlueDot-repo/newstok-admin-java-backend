@@ -1,4 +1,4 @@
-# NewsTok Admin Backend
+\# NewsTok Admin Backend
 
 ## Overview
 
@@ -214,7 +214,8 @@ Changing Maximum Packet Size Limit in SQL
 ### On Windows
 
 1. **Locate Configuration File**
-   - Find `my.ini` in the MySQL installation directory, such as `C:\ProgramData\MySQL\MySQL Server X.Y\my.ini`.
+   - Find `my.ini` in the MySQL installation directory, such as `C:\xampp\mysql\bin\my.ini
+     `. or `C:\ProgramData\MySQL\MySQL Server X.Y\my.ini`.
 
 2. **Edit Configuration File**
    - Open `my.ini` with a text editor (Notepad) as an administrator.

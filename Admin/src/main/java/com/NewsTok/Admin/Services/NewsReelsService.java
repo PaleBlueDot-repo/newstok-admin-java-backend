@@ -1,8 +1,14 @@
 package com.NewsTok.Admin.Services;
 
+import com.NewsTok.Admin.Dtos.RegenerateFieldRequest;
+import com.NewsTok.Admin.Dtos.RegenerateMediaRequest;
 import com.NewsTok.Admin.Exception.GeminiApiResultNotFoundException;
 import com.NewsTok.Admin.Models.GeminiApiResult;
 
+import com.NewsTok.Admin.Models.News;
+import com.NewsTok.Admin.Repositories.NewsRepository;
+import com.NewsTok.Admin.Repositories.ReelsRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +20,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import org.springframework.web.reactive.function.client.ClientResponse;
-
+import com.NewsTok.Admin.Models.Reels;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class NewsReelsService {
     @Autowired
     private WebClient webClient;
+
+    @Autowired
+    private ReelsRepository reelsRepository;
+
+    @Autowired
+    private NewsRepository newsRepository;
 
 
     @Value("${newsreels.api.process.url}")
@@ -34,6 +47,9 @@ public class NewsReelsService {
 
     @Value("${newsreels.api.music.url}")
     private String musicApiEndpoint;
+
+    @Value("${newsreels.api.single.process.url}")
+    private String processSingleApiEndpoint;
 
     @Value("${api.key}")
     private String apiKey;
@@ -145,6 +161,136 @@ public class NewsReelsService {
         }
 
     }
+
+    public Reels updateReel(Reels reel){
+
+       Reels temreels= reelsRepository.findByReelsId(reel.getReelsId());
+       temreels.setBackground_color(reel.getBackground_color());
+       temreels.setFont_family(reel.getFont_family());
+       temreels.setSummary(reel.getSummary());
+       temreels.setFont_color(reel.getFont_color());
+
+       try{
+           reelsRepository.save(temreels);
+
+       }
+       catch (Exception e){
+           System.out.println(e.getMessage());
+       }
+
+        return  temreels;
+
+    }
+
+    public Reels generateImageMusic(RegenerateMediaRequest regenerateMediaRequest) throws IOException {
+        Reels reel=reelsRepository.findByReelsId(regenerateMediaRequest.getReelsId());
+
+        if( regenerateMediaRequest.getType().equals("music")){
+            String music=this.createReelsMusic(regenerateMediaRequest.getPrompt());
+            reel.setMusic(music);
+
+
+        }
+        else{
+            String image=this.createReelsImage(regenerateMediaRequest.getPrompt());
+            reel.setImage(image);
+
+        }
+
+        try{
+            reelsRepository.save(reel);
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        return  reel;
+
+    }
+
+    public String generatePromptForField(String fieldName, String existingValue) {
+        switch (fieldName) {
+            case "summary":
+                return "Generate a concise summary  for the content: " + existingValue;
+            case "background_color":
+                return "Generate a background color (only color code in english) that matches the theme: " + existingValue;
+            case "font_color":
+                return "Suggest a suitable font color (only color code in english) that complements the theme: " + existingValue;
+            case "font_family":
+                return "Suggest an appropriate font family (only family name in english) that works well with the theme: " + existingValue;
+            default:
+                return "Generate a prompt based on the field " + fieldName;
+        }
+    }
+
+
+
+
+    public Reels regenerateFields(RegenerateFieldRequest request) throws JsonProcessingException {
+        Optional<Reels> reels=reelsRepository.findById(request.getReelsId());
+        Reels reel=reels.get();
+        Optional<News> newsS=newsRepository.findById(reel.getNewsId());
+        News news=newsS.get();
+
+
+        String inputText= generatePromptForField(request.getField(), news.getArticle());
+
+        String AiApiResult = "";
+
+        try {
+            AiApiResult = webClient.post()
+                    .uri(processSingleApiEndpoint)
+                    .header("x-api-key", apiKey)
+                    .bodyValue(Map.of("input_text", inputText))  // Send the generated prompt
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(AiApiResult);
+
+
+        String extractedText = rootNode.get("text").asText();
+
+
+        System.out.println("Extracted Text: " + extractedText);
+
+       System.out.println(request.getField());
+
+        if(request.getField().equals("summary")) {
+            reel.setSummary(extractedText);
+
+        }
+        if(request.getField().equals("background_color")) {
+            reel.setBackground_color(extractedText);
+
+        }
+        if(request.getField().equals("font_color")) {
+            reel.setFont_color(extractedText);
+
+        }
+        if(request.getField().equals("font_family")) {
+            reel.setFont_family(extractedText);
+
+        }
+
+
+          try{
+              reelsRepository.save(reel);
+          }
+          catch (Exception e){
+              System.out.println(e.getMessage());
+          }
+
+         return  reel;
+
+
+    }
+
+
 
 
 

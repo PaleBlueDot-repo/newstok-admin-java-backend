@@ -23,8 +23,9 @@ public class NewsService {
     @Autowired
     private NewsRepository newsRepository;
 
-    public List<News> getNewsById(Long id) {
-        return newsRepository.findById(id);
+    public News getNewsById(Long id) {
+        Optional<News> optionalNews = newsRepository.findById(id);
+        return optionalNews.get();
     }
 
     @Autowired
@@ -87,24 +88,63 @@ public class NewsService {
     }
 
     public List<News> getNewsByIds(ReelsRequestDto ids) {
-
-
-        List<News> temList = new ArrayList<>();
+        List<News> newsList = new ArrayList<>();
 
         // Iterate over the list of IDs
         for (Long id : ids.getIds()) {
             // Find the News by ID, returns an Optional
-            List<News> singleNews = newsRepository.findById(id);
+            Optional<News> optionalNews = newsRepository.findById(id);
 
             // If the News is found, add it to the list
-            temList.add(singleNews.get(0));
-
+            optionalNews.ifPresent(newsList::add);
         }
 
-        return temList;
-
-
+        return newsList;
     }
+
+
+    public News updateNews(Long id, News updatedNews) {
+        // Retrieve the existing news item
+        Optional<News> optionalExistingNews = newsRepository.findById(id);
+
+        // Throw an exception if the news item is not found
+        if (optionalExistingNews.isEmpty()) {
+            throw new RuntimeException("News not found with id " + id);
+        }
+
+        // Get the existing news item
+        News existingNews = optionalExistingNews.get();
+
+        // Update the fields
+        try {
+            existingNews.setTitle(updatedNews.getTitle());
+            existingNews.setNewspaperName(updatedNews.getNewspaperName());
+            existingNews.setPublished(updatedNews.getPublished());
+            existingNews.setArticle(updatedNews.getArticle());
+
+            // Save and return the updated news item
+            return newsRepository.save(existingNews);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update news: " + e.getMessage());
+        }
+    }
+
+
+    public void deleteNews(Long id) {
+        // Check if the news item exists before attempting to delete
+        if (newsRepository.findById(id).isEmpty()) {
+            throw new RuntimeException("News not found with id " + id);
+        }
+
+        try {
+
+            newsRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println("im in the exception");
+            throw new RuntimeException("Failed to delete news with id " + id + ": " + e.getMessage());
+        }
+    }
+
 
 
 

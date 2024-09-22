@@ -1,6 +1,8 @@
 package com.NewsTok.Admin.Controllers;
 
 import com.NewsTok.Admin.Dtos.ReelsRequestDto;
+import com.NewsTok.Admin.Dtos.RegenerateFieldRequest;
+import com.NewsTok.Admin.Dtos.RegenerateMediaRequest;
 import com.NewsTok.Admin.Exception.GeminiApiResultNotFoundException;
 import com.NewsTok.Admin.Exception.ImageProcessingException;
 import com.NewsTok.Admin.Models.GeminiApiResult;
@@ -9,14 +11,17 @@ import com.NewsTok.Admin.Models.Reels;
 import com.NewsTok.Admin.Repositories.ReelsRepository;
 import com.NewsTok.Admin.Services.NewsReelsService;
 import com.NewsTok.Admin.Services.NewsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -107,6 +112,27 @@ public class NewsReelsController {
 
     }
 
+    @PostMapping("/updateFields")
+    public ResponseEntity<Reels> updateFields(@RequestBody  Reels reels ){
+
+        Reels updatedReel=newsReelsService.updateReel(reels);
+
+        return ResponseEntity.ok(updatedReel);
+    }
+
+    @PostMapping("/regenerateField")
+    public ResponseEntity<Reels> regenerateField(@RequestBody RegenerateFieldRequest request) throws JsonProcessingException {
+
+       return  ResponseEntity.ok(newsReelsService.regenerateFields(request));
+    }
+
+
+    @PostMapping("/regenerateMedia")
+    public ResponseEntity<Reels> regenerateMedia(@RequestBody RegenerateMediaRequest request) throws IOException {
+
+        return  ResponseEntity.ok(newsReelsService.generateImageMusic(request));
+
+    }
 
 
 

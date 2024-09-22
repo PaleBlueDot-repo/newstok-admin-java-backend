@@ -11,8 +11,14 @@ public class Reels {
     private Long reelsId;
 
     private Long newsId;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String background_color;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String font_color;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String font_family;
     @Lob
     @Column(columnDefinition = "LONGTEXT")

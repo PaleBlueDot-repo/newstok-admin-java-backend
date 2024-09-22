@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface NewsRepository extends JpaRepository<News,Integer> {
-    public List<News> findById(Long Id);
-    public List<News> findByTitleAndLink(String title, String link);
+public interface NewsRepository extends JpaRepository<News,Long> {
+
+     public List<News> findByTitleAndLink(String title, String link);
+
 
 }

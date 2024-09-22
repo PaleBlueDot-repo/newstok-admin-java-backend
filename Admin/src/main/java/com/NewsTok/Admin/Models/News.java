@@ -2,6 +2,8 @@ package com.NewsTok.Admin.Models;
 
 import jakarta.persistence.*;
 
+import java.util.Optional;
+
 @Entity
 @Table(name="news")
 public class News {
@@ -80,4 +82,6 @@ public class News {
     public void setPublished(String published) {
         this.published = published;
     }
+
+
 }

@@ -41,4 +41,32 @@ public class NewsController {
     }
 
 
+    // Update news
+    @PutMapping("/updateNews/{id}")
+    public ResponseEntity<News> updateNews(@PathVariable Long id, @RequestBody News updatedNews) {
+        try {
+            News updated = newsService.updateNews(id, updatedNews);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+
+        } catch (RuntimeException ex) {
+            // Return 404 with the error message
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/deleteNews/{id}")
+    public ResponseEntity<String> deleteNews(@PathVariable Long id) {
+        try {
+            System.out.println("hello deleting");
+            System.out.println(id);
+
+            newsService.deleteNews(id);
+
+            return new ResponseEntity<>("News deleted successfully", HttpStatus.OK);
+        } catch (RuntimeException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }
