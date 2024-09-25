@@ -1,4 +1,4 @@
-\# NewsTok Admin Backend
+# NewsTok Admin Backend
 
 ## Overview
 
@@ -11,6 +11,8 @@ The NewsTok Admin Backend is a Spring Boot application designed to manage news, 
   - [Property Explanations](#property-explanations)
 - [Endpoints](#endpoints)
 ## Features
+
+![WhatsApp Image 2024-09-25 at 22 07 35_ff7079d4](https://github.com/user-attachments/assets/13ded7d4-c2a5-41f3-82be-2b016403aa77)
 
 - **Admin Authentication:** Secure login with JWT tokens.
 - **Dashboard Data:** Retrieve and manage dashboard information.
